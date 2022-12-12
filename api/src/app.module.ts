@@ -4,6 +4,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
 import { ConfigModule } from "./config";
+import { DetectModule } from "./detect";
 import { UserModule } from "./user";
 
 @Module({
@@ -13,6 +14,7 @@ import { UserModule } from "./user";
         }),
         UserModule,
         AuthModule,
+        DetectModule,
     ],
     controllers: [AppController],
     providers: [AppService],

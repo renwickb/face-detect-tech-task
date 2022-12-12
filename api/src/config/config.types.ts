@@ -57,3 +57,19 @@ export class AuthConfig extends BaseConfig {
         return this.get("JWT_SECRET", DEFAULT_JWT_SECRET);
     }
 }
+
+export class ImageConfig extends BaseConfig {
+    constructor(config: ConfigData) {
+        super(config);
+    }
+
+    public maxFileSizeMb(): number {
+        return this.get("MAX_FILE_SIZE_MB", 100);
+    }
+
+    public acceptedFileMimeTypes(): Array<string> {
+        return this.get("ACCEPTED_FILE_MIME_TYPES", "image/jpeg")
+            .split(",")
+            .filter(Boolean);
+    }
+}
