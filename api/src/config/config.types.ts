@@ -26,3 +26,21 @@ export class ServiceConfig extends BaseConfig {
         return this.get("CORS_ALLOWED_ORIGINS", "*").split(",").filter(Boolean);
     }
 }
+
+export class AuthConfig extends BaseConfig {
+    public constructor(config: ConfigData) {
+        super(config);
+    }
+
+    public adminUserEmail(): string {
+        return this.get("ADMIN_USER_EMAIL_ADDRESS", "admin@exaple.com");
+    }
+
+    public adminPassword(): string {
+        return this.get("ADMIN_USER_PASSWORD");
+    }
+
+    public defaultPassword(): string {
+        return this.get("DEFAULT_USER_PASSWORD");
+    }
+}
