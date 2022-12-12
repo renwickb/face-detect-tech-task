@@ -19,7 +19,7 @@ export class UserService {
         return this._userList.get(email.toLowerCase());
     }
 
-    public addUser(email: string): User | undefined {
+    public addUser(email: string, password: string): User | undefined {
         if (this.findByEmail(email)) {
             throw new UserServiceException(
                 `user with email ${email} already exists`
@@ -27,7 +27,7 @@ export class UserService {
         }
 
         const role = this._getRoleForEmail(email);
-        const user = new User(email, role);
+        const user = new User(email, password, role);
 
         this._userList.set(email.toLowerCase(), user);
 
@@ -39,16 +39,14 @@ export class UserService {
     }
 
     private _isAdminEmail(email: string): boolean {
-        const adminEmail = this._getAdminEmail();
+        const adminEmail = this.configService.authConfig().adminUserEmail();
         return email.toLocaleLowerCase() === adminEmail.toLowerCase();
     }
 
-    private _getAdminEmail(): string {
-        return this.configService.authConfig().adminUserEmail();
-    }
-
     private _initialiseUserList(): void {
-        const adminEmail = this._getAdminEmail();
-        this.addUser(adminEmail);
+        const config = this.configService.authConfig();
+        const email = config.adminUserEmail();
+        const password = config.adminPassword();
+        this.addUser(email, password);
     }
 }

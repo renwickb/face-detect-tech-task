@@ -32,7 +32,20 @@ export class ConfigModule {
     }
 
     private static loadConfig(): ConfigData {
+        return {
+            ...ConfigModule.loadConfigFromProcessEnv(),
+            ...ConfigModule.loadConfigFromFile(),
+        };
+    }
+
+    private static loadConfigFromFile(): ConfigData {
         const configFilePath = path.resolve(__dirname, "../../", ".env");
         return dotenv.parse(fs.readFileSync(configFilePath));
+    }
+
+    private static loadConfigFromProcessEnv(): ConfigData {
+        return {
+            ...process.env,
+        };
     }
 }

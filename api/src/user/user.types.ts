@@ -4,12 +4,14 @@ export enum Role {
 }
 
 export class User {
-    public constructor(email?: string, role?: Role) {
+    public constructor(email?: string, password?: string, role?: Role) {
         this.email = email;
+        this.password = password;
         this.role = role;
     }
 
     public email: string;
+    public password: string;
     public role: Role;
 }
 
