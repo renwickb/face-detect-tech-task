@@ -8,6 +8,7 @@ import {
 import { Job } from "bull";
 import { ConfigService } from "src/config";
 
+import { FaceDetector } from "./detect.face.detector";
 import { DetectService } from "./detect.service";
 import { DetectStatus, DetectTask } from "./detect.types";
 
@@ -20,7 +21,13 @@ export class DetectConsumer {
 
     @Process()
     public async detectFaces(job: Job<DetectTask>): Promise<DetectTask> {
+        const detector = new FaceDetector(job.data.filename);
+        const results = await detector.detectFaces();
+
+        job.data.faceCount = results?.faces?.length ?? 0;
+
         await this.processingDelay();
+
         return job.data;
     }
 
@@ -38,6 +45,7 @@ export class DetectConsumer {
     @OnQueueFailed()
     public onFailed(job: Job<DetectTask>, error: Error): void {
         this.updateTaskStatus(job, DetectStatus.Failed, error);
+        console.error(error);
     }
 
     private updateTaskStatus(
@@ -52,6 +60,7 @@ export class DetectConsumer {
         );
 
         this.detectService.updateTaskByJobId(job.id, {
+            faceCount: job.data.faceCount,
             status,
             error: error?.message,
         });
