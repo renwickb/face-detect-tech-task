@@ -72,4 +72,22 @@ export class ImageConfig extends BaseConfig {
             .split(",")
             .filter(Boolean);
     }
+
+    public processingDelaySeconds(): number {
+        return this.get("PROCESSING_DELAY_SECONDS", 5);
+    }
+}
+
+export class QueueConfig extends BaseConfig {
+    constructor(config: ConfigData) {
+        super(config);
+    }
+
+    public redisHost(): string {
+        return this.get("REDIS_HOST", "localhost");
+    }
+
+    public redisPort(): number {
+        return this.get("REDIS_PORT", 6379);
+    }
 }

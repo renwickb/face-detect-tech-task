@@ -1,8 +1,11 @@
+import { BullModule } from "@nestjs/bull";
 import { Module } from "@nestjs/common";
 import { MulterModule } from "@nestjs/platform-express";
 import { ConfigService } from "src/config";
 
 import { DetectController } from "./detect.controller";
+import { DetectService } from "./detect.service";
+import { DetectConsumer } from "./detect.task.consumer";
 
 @Module({
     imports: [
@@ -28,7 +31,24 @@ import { DetectController } from "./detect.controller";
             },
             inject: [ConfigService],
         }),
+        BullModule.forRootAsync({
+            useFactory(configService: ConfigService) {
+                const config = configService.queueConfig();
+
+                return {
+                    redis: {
+                        host: config.redisHost(),
+                        port: config.redisPort(),
+                    },
+                };
+            },
+            inject: [ConfigService],
+        }),
+        BullModule.registerQueue({
+            name: "face_detection",
+        }),
     ],
     controllers: [DetectController],
+    providers: [DetectService, DetectConsumer],
 })
 export class DetectModule {}
