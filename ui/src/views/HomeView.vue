@@ -1,5 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import DetectTaskCreate from "@/components/DetectTaskCreate.vue";
+import DetectTaskSummary from "@/components/DetectTaskSummary.vue";
+</script>
 
 <template>
-    <div>detections go here!</div>
+    <v-container class="mb-4">
+        <DetectTaskCreate />
+    </v-container>
+    <Suspense>
+        <DetectTaskSummary />
+    </Suspense>
 </template>
