@@ -1,6 +1,7 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import {
+    type AdminSummary,
     detectService,
     DetectStatus,
     type DetectTask,
@@ -8,7 +9,9 @@ import {
 
 export const useDetectStore = defineStore("detect", () => {
     const tasks = ref(new Map<string, DetectTask>());
+    const adminSummary = ref<AdminSummary | null>(null);
     const error = ref<Error | null>(null);
+    const summaryWatchHandle = ref<any | undefined>();
 
     const taskList = computed(() =>
         [...tasks.value.values()].sort((a, b) => {
@@ -74,5 +77,42 @@ export const useDetectStore = defineStore("detect", () => {
         });
     }
 
-    return { tasks, taskList, getAllTasks, refreshTaskStatus, createTask };
+    async function getAdminSummry(): Promise<AdminSummary> {
+        try {
+            const summary = await detectService.getAdminSummary();
+            adminSummary.value = summary;
+
+            return summary;
+        } catch (err) {
+            error.value = err as Error;
+            throw err;
+        }
+    }
+
+    function watchSummary(): void {
+        if (!summaryWatchHandle.value) {
+            summaryWatchHandle.value = setInterval(async () => {
+                await getAdminSummry();
+            }, 100);
+        }
+    }
+
+    function unwatchSummary() {
+        if (summaryWatchHandle.value) {
+            clearInterval(summaryWatchHandle.value);
+            summaryWatchHandle.value = undefined;
+        }
+    }
+
+    return {
+        tasks,
+        taskList,
+        adminSummary,
+        getAllTasks,
+        refreshTaskStatus,
+        createTask,
+        getAdminSummry,
+        watchSummary,
+        unwatchSummary,
+    };
 });

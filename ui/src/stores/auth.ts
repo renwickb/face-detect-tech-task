@@ -21,6 +21,7 @@ export const useAuthStore = defineStore("auth", () => {
     }
 
     async function logout(): Promise<void> {
+        console.log("LOGOUT");
         user.value = null;
         authToken.value = null;
         authError.value = null;

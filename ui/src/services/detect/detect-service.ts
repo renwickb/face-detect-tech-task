@@ -17,6 +17,16 @@ export interface DetectTask {
     faceCount?: number;
 }
 
+export interface AdminSummaryItem {
+    userEmail: string;
+    imageCount: number;
+    faceCount: number;
+}
+
+export interface AdminSummary {
+    summary: Array<AdminSummaryItem>;
+}
+
 class DetectService {
     public async getAllTasks(): Promise<Array<DetectTask>> {
         const response = await httpService.get<Array<DetectTask>>("/detect");
@@ -24,7 +34,7 @@ class DetectService {
     }
 
     public async getTaskStatus(trackingId: string): Promise<DetectTask> {
-        const url = `/detect/${encodeURIComponent(trackingId)}`;
+        const url = `/detect/track/${encodeURIComponent(trackingId)}`;
         const response = await httpService.get<DetectTask>(url);
         return response.data;
     }
@@ -47,6 +57,13 @@ class DetectService {
             headers
         );
 
+        return response.data;
+    }
+
+    public async getAdminSummary(): Promise<AdminSummary> {
+        const response = await httpService.get<AdminSummary>(
+            "/detect/admin-summary"
+        );
         return response.data;
     }
 }

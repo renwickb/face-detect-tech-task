@@ -4,7 +4,7 @@ import { useAuthStore } from "@/stores/auth";
 import { VForm } from "vuetify/components";
 import * as yup from "yup";
 import { validate } from "@/helper";
-import router from "@/router";
+import router, { RouteName } from "@/router";
 
 const authStore = useAuthStore();
 
@@ -34,7 +34,7 @@ async function onSignup() {
                 const { signup } = authStore;
 
                 await signup(username.value, password.value);
-                await router.replace({ name: "home" });
+                await router.replace({ name: RouteName.home });
             }
         }
     } catch (err) {

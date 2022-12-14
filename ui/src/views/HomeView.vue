@@ -7,7 +7,9 @@ import DetectTaskSummary from "@/components/DetectTaskSummary.vue";
     <v-container class="mb-4">
         <DetectTaskCreate />
     </v-container>
-    <Suspense>
-        <DetectTaskSummary />
-    </Suspense>
+    <v-card title="Tasks">
+        <Suspense>
+            <DetectTaskSummary />
+        </Suspense>
+    </v-card>
 </template>
