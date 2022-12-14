@@ -11,18 +11,27 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { User } from "src/user";
+import { Role, User, UserService } from "src/user";
 
-import { JwtAuthGuard } from "../auth";
+import { JwtAuthGuard, Roles, RolesGuard } from "../auth";
 import { DetectService } from "./detect.service";
-import { DetectRequest, DetectResponse } from "./detect.types";
+import {
+    AdminSummary,
+    AdminSummaryItem,
+    DetectRequest,
+    DetectResponse,
+    DetectStatus,
+} from "./detect.types";
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller({
     path: "detect",
 })
 export class DetectController {
-    constructor(private readonly detectService: DetectService) {}
+    constructor(
+        private readonly detectService: DetectService,
+        private readonly userService: UserService
+    ) {}
 
     @UseInterceptors(FileInterceptor("file"))
     @Post()
@@ -45,7 +54,7 @@ export class DetectController {
         return DetectResponse.fromTask(task);
     }
 
-    @Get("/:trackingId")
+    @Get("/track/:trackingId")
     public getTaskStatus(
         @Param("trackingId") trackingId: string
     ): DetectResponse {
@@ -65,5 +74,29 @@ export class DetectController {
         const tasks = this.detectService.getAllTasksForUser(user);
 
         return tasks.map(DetectResponse.fromTask);
+    }
+
+    @Get("/admin-summary")
+    @Roles(Role.Administrator)
+    public getAdminSummary(): AdminSummary {
+        const users = this.userService.getAllUsers();
+
+        return {
+            summary: users.map((user): AdminSummaryItem => {
+                const tasks = this.detectService.getAllTasksForUser(user);
+
+                return {
+                    userEmail: user.email,
+                    imageCount: tasks.length,
+                    faceCount: tasks
+                        .filter((task) => task.status === DetectStatus.Complete)
+                        .reduce(
+                            (faceCount, task) =>
+                                faceCount + task.faceCount ?? 0,
+                            0
+                        ),
+                };
+            }),
+        };
     }
 }

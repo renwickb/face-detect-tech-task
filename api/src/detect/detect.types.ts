@@ -67,3 +67,13 @@ export interface DetectTask {
     faceCount?: number;
     error?: string;
 }
+
+export interface AdminSummaryItem {
+    userEmail: string;
+    imageCount: number;
+    faceCount: number;
+}
+
+export interface AdminSummary {
+    summary: Array<AdminSummaryItem>;
+}
