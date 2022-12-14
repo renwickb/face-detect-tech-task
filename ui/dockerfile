@@ -1,0 +1,9 @@
+FROM node:hydrogen-alpine
+
+RUN apk update
+
+WORKDIR /ui
+
+COPY . .
+
+RUN npm install
