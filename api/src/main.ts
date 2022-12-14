@@ -1,4 +1,4 @@
-import { ValidationPipe } from "@nestjs/common";
+import { ValidationPipe, HttpStatus } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
@@ -17,8 +17,10 @@ async function bootstrap() {
     const corsOrigins = serviceConfig.corsAllowedOrigins();
 
     app.enableCors({
-        origin: corsOrigins,
+        origin: corsOrigins.map((origin) => new RegExp(origin)),
         credentials: true,
+        optionsSuccessStatus: HttpStatus.OK,
+        allowedHeaders: "*",
     });
 
     app.useGlobalPipes(new ValidationPipe());
