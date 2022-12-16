@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import type { AdminSummary } from "@/services/detect";
 import { useDetectStore } from "@/stores/detect";
 import AdminSummaryItem from "./AdminSummaryItem.vue";
@@ -12,9 +12,10 @@ store.$subscribe(() => {
 });
 
 await store.getAdminSummry();
-store.watchSummary();
 
-onUnmounted(() => store.unwatchSummary);
+onMounted(() => store.watchSummary());
+
+onUnmounted(() => store.unwatchSummary());
 </script>
 
 <template>

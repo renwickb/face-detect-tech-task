@@ -12,6 +12,7 @@ async function bootstrap() {
 
     const configService = app.get(ConfigService);
     const serviceConfig = configService.serviceConfig();
+    const queueConfig = configService.queueConfig();
 
     const port = serviceConfig.port();
     const corsOrigins = serviceConfig.corsAllowedOrigins();
@@ -24,6 +25,12 @@ async function bootstrap() {
     });
 
     app.useGlobalPipes(new ValidationPipe());
+
+    console.log(`🚀 Server started and listening on port ${port}`);
+    console.log(
+        `👉 Using Redis queues at ${queueConfig.redisHost()}:${queueConfig.redisPort()}`
+    );
+
     await app.listen(port);
 }
 bootstrap();

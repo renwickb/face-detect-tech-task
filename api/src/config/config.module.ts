@@ -33,8 +33,8 @@ export class ConfigModule {
 
     private static loadConfig(): ConfigData {
         return {
-            ...ConfigModule.loadConfigFromProcessEnv(),
             ...ConfigModule.loadConfigFromFile(),
+            ...ConfigModule.loadConfigFromProcessEnv(),
         };
     }
 

@@ -73,7 +73,7 @@ export const useDetectStore = defineStore("detect", () => {
                     clearInterval(timerHandle);
                     resolve();
                 }
-            }, 100);
+            }, 1000);
         });
     }
 
@@ -93,7 +93,7 @@ export const useDetectStore = defineStore("detect", () => {
         if (!summaryWatchHandle.value) {
             summaryWatchHandle.value = setInterval(async () => {
                 await getAdminSummry();
-            }, 100);
+            }, 1000);
         }
     }
 
